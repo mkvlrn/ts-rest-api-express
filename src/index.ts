@@ -1,5 +1,9 @@
-import { AdvancedMath } from '#/supermath/advanced-math';
+import { config as dotenvConfig } from 'dotenv';
 
-const math = new AdvancedMath();
+import { Server } from '#/server/Server';
 
-console.log(`210 x 2 = ${math.multiply(210, 2)}`);
+dotenvConfig();
+
+const server = new Server();
+
+server.start(+process.env.PORT! || 4000);
