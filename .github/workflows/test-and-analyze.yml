@@ -1,0 +1,45 @@
+name: test-and-analyze
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: install dependencies
+        run: yarn install
+      - name: run tests
+        run: yarn test --coverage
+      - name: save artifact for sonar
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact
+          path: coverage
+  sonarcloud:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: ./coverage
+      - name: trigger scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

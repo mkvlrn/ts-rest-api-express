@@ -1,0 +1,11 @@
+{
+  "*.(ts|tsx)": [
+    "npx tsc-files",
+    "npx eslint --fix",
+    "npx prettier --write",
+    "npx jest --bail --findRelatedTests"
+  ],
+  "*.json": [
+    "npx prettier --write"
+  ]
+}
