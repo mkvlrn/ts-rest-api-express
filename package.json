@@ -1,8 +1,8 @@
 {
-  "name": "ts-node",
+  "name": "ts-rest-api-express",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:mkvlrn/ts-node",
+  "repository": "git@github.com:mkvlrn/ts-rest-api-express",
   "author": "Mike Valeriano <mkvlrn@gmail.com>",
   "license": "MIT",
   "scripts": {
