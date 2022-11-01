@@ -1,7 +1,8 @@
 import { createMock } from '@golevelup/ts-jest';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Task } from '@prisma/client';
 import 'reflect-metadata';
 
+import { GetManyTasksResponseDto } from '#/modules/tasks/dto/get-many-tasks-response.dto';
 import { TasksService } from '#/modules/tasks/tasks.service';
 import { AppError, AppErrorType } from '#/server/AppError';
 
@@ -196,6 +197,51 @@ describe('tasks.service.ts', () => {
       );
 
       const act = () => sut.deleteTask('taskId', 'userId');
+
+      await expect(act).rejects.toThrow(AppError);
+      await expect(act).rejects.toMatchObject(
+        expect.objectContaining({
+          statusCode: 500,
+          message: 'database exploded',
+        }),
+      );
+    });
+  });
+
+  describe('getManyTasks', () => {
+    test('success', async () => {
+      const sut = new TasksService(
+        createMock<PrismaClient>({
+          task: {
+            count: jest.fn().mockResolvedValue(1),
+            findMany: jest.fn().mockResolvedValue([{}]),
+          },
+        }),
+      );
+
+      const result = await sut.getManyTasks('userId');
+
+      expect(result).toBeInstanceOf(GetManyTasksResponseDto);
+      expect(result).toEqual<GetManyTasksResponseDto>({
+        totalTasks: 1,
+        totalPages: 1,
+        page: 1,
+        tasks: [{} as Task],
+      });
+    });
+
+    test('fail - orm/db error', async () => {
+      const sut = new TasksService(
+        createMock<PrismaClient>({
+          task: {
+            count: jest.fn().mockImplementation(() => {
+              throw new AppError(AppErrorType.INTERNAL, 'database exploded');
+            }),
+          },
+        }),
+      );
+
+      const act = () => sut.getManyTasks('userId', 2);
 
       await expect(act).rejects.toThrow(AppError);
       await expect(act).rejects.toMatchObject(

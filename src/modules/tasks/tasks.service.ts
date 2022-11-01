@@ -2,6 +2,7 @@ import { PrismaClient, Task, TaskStatus } from '@prisma/client';
 import { injectable } from 'tsyringe';
 
 import { CreateTaskDto } from '#/modules/tasks/dto/create-task.dto';
+import { GetManyTasksResponseDto } from '#/modules/tasks/dto/get-many-tasks-response.dto';
 import { AppError, AppErrorType } from '#/server/AppError';
 
 @injectable()
@@ -25,16 +26,14 @@ export class TasksService {
   ): Promise<Task> {
     try {
       const exists = await this.orm.task.findUnique({ where: { id: taskId } });
-      if (!exists) {
+      if (!exists)
         throw new AppError(
           AppErrorType.NOT_FOUND,
           `task with id ${taskId} not found`,
         );
-      }
 
-      if (exists.userId !== userId) {
+      if (exists.userId !== userId)
         throw new AppError(AppErrorType.FORBIDDEN, 'this task is not yours');
-      }
 
       return await this.orm.task.update({
         where: { id: taskId },
@@ -49,22 +48,38 @@ export class TasksService {
   async deleteTask(taskId: string, userId: string): Promise<Task> {
     try {
       const exists = await this.orm.task.findUnique({ where: { id: taskId } });
-      if (!exists) {
+      if (!exists)
         throw new AppError(
           AppErrorType.NOT_FOUND,
           `task with id ${taskId} not found`,
         );
-      }
 
-      if (exists.userId !== userId) {
+      if (exists.userId !== userId)
         throw new AppError(AppErrorType.FORBIDDEN, 'this task is not yours');
-      }
 
       return await this.orm.task.delete({
         where: { id: taskId },
       });
     } catch (err) {
       if (err instanceof AppError) throw err;
+      throw new AppError(AppErrorType.INTERNAL, (err as Error).message);
+    }
+  }
+
+  async getManyTasks(
+    userId: string,
+    page: number = 1,
+  ): Promise<GetManyTasksResponseDto> {
+    try {
+      const totalTasks = await this.orm.task.count({ where: { userId } });
+      const tasks = await this.orm.task.findMany({
+        where: { userId },
+        take: 5,
+        skip: (page - 1) * 5,
+      });
+
+      return new GetManyTasksResponseDto(totalTasks, page, tasks);
+    } catch (err) {
       throw new AppError(AppErrorType.INTERNAL, (err as Error).message);
     }
   }
