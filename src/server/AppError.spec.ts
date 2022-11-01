@@ -6,6 +6,7 @@ describe('AppError.ts', () => {
 
     expect(sut.name).toBe('AppError');
     expect(sut.type).toBe('BAD_REQUEST');
+    expect(sut.statusCode).toBe(400);
     expect(sut.message).toBe('wrong stuff');
   });
 });
