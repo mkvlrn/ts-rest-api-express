@@ -7,9 +7,9 @@ export enum AppErrorType {
 }
 
 export class AppError extends Error {
-  public statusCode: number;
+  statusCode: number;
 
-  public type: string;
+  type: string;
 
   constructor(type: AppErrorType, message: string) {
     super(message);
