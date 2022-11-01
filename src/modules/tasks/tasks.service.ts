@@ -83,4 +83,23 @@ export class TasksService {
       throw new AppError(AppErrorType.INTERNAL, (err as Error).message);
     }
   }
+
+  async getTask(taskId: string, userId: string): Promise<Task> {
+    try {
+      const task = await this.orm.task.findUnique({ where: { id: taskId } });
+      if (!task)
+        throw new AppError(
+          AppErrorType.NOT_FOUND,
+          `task with id ${taskId} not found`,
+        );
+
+      if (task.userId !== userId)
+        throw new AppError(AppErrorType.FORBIDDEN, 'this task is not yours');
+
+      return task;
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      throw new AppError(AppErrorType.INTERNAL, (err as Error).message);
+    }
+  }
 }

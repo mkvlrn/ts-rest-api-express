@@ -252,4 +252,82 @@ describe('tasks.service.ts', () => {
       );
     });
   });
+
+  describe('getTask', () => {
+    test('success', async () => {
+      const sut = new TasksService(
+        createMock<PrismaClient>({
+          task: {
+            findUnique: jest.fn().mockResolvedValue({ userId: 'userId' }),
+          },
+        }),
+      );
+
+      const result = await sut.getTask('taskId', 'userId');
+
+      expect(result).toEqual({ userId: 'userId' });
+    });
+
+    test('fail - task not found', async () => {
+      const sut = new TasksService(
+        createMock<PrismaClient>({
+          task: {
+            findUnique: jest.fn().mockResolvedValue(null),
+          },
+        }),
+      );
+
+      const act = () => sut.getTask('taskId', 'userId');
+
+      await expect(act).rejects.toThrow(AppError);
+      await expect(act).rejects.toMatchObject(
+        expect.objectContaining({
+          statusCode: 404,
+          message: 'task with id taskId not found',
+        }),
+      );
+    });
+
+    test('fail - not owner of task', async () => {
+      const sut = new TasksService(
+        createMock<PrismaClient>({
+          task: {
+            findUnique: jest.fn().mockResolvedValue({ userId: 'wrong' }),
+          },
+        }),
+      );
+
+      const act = () => sut.getTask('taskId', 'userId');
+
+      await expect(act).rejects.toThrow(AppError);
+      await expect(act).rejects.toMatchObject(
+        expect.objectContaining({
+          statusCode: 403,
+          message: 'this task is not yours',
+        }),
+      );
+    });
+
+    test('fail - orm/db error', async () => {
+      const sut = new TasksService(
+        createMock<PrismaClient>({
+          task: {
+            findUnique: jest.fn().mockImplementation(() => {
+              throw new AppError(AppErrorType.INTERNAL, 'database exploded');
+            }),
+          },
+        }),
+      );
+
+      const act = () => sut.getTask('taskId', 'userId');
+
+      await expect(act).rejects.toThrow(AppError);
+      await expect(act).rejects.toMatchObject(
+        expect.objectContaining({
+          statusCode: 500,
+          message: 'database exploded',
+        }),
+      );
+    });
+  });
 });
