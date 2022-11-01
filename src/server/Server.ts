@@ -12,7 +12,7 @@ export class Server {
     );
   }
 
-  public start(port: number) {
+  start(port: number) {
     this.app.listen(port, () => console.log(`server up @${port}`));
   }
 }
