@@ -1,5 +1,6 @@
 export enum AppErrorType {
   INTERNAL = 500,
+  CONFLICT = 409,
   NOT_FOUND = 404,
   FORBIDDEN = 403,
   UNAUTHORIZED = 401,
