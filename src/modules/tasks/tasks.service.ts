@@ -1,8 +1,9 @@
-import { PrismaClient, Task, TaskStatus } from '@prisma/client';
+import { PrismaClient, Task } from '@prisma/client';
 import { injectable } from 'tsyringe';
 
 import { CreateTaskDto } from '#/modules/tasks/dto/create-task.dto';
 import { GetManyTasksResponseDto } from '#/modules/tasks/dto/get-many-tasks-response.dto';
+import { UpdateTaskStatus } from '#/modules/tasks/dto/update-task-status.dto';
 import { AppError, AppErrorType } from '#/server/AppError';
 
 @injectable()
@@ -20,7 +21,7 @@ export class TasksService {
   }
 
   async updateTaskStatus(
-    status: TaskStatus,
+    input: UpdateTaskStatus,
     taskId: string,
     userId: string,
   ): Promise<Task> {
@@ -37,7 +38,7 @@ export class TasksService {
 
       return await this.orm.task.update({
         where: { id: taskId },
-        data: { status },
+        data: { status: input.status },
       });
     } catch (err) {
       if (err instanceof AppError) throw err;

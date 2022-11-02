@@ -58,7 +58,7 @@ describe('tasks.service.ts', () => {
       );
 
       const result = await sut.updateTaskStatus(
-        'IN_PROGRESS',
+        { status: 'IN_PROGRESS' },
         'taskId',
         'userId',
       );
@@ -75,7 +75,8 @@ describe('tasks.service.ts', () => {
         }),
       );
 
-      const act = () => sut.updateTaskStatus('IN_PROGRESS', 'taskId', 'userId');
+      const act = () =>
+        sut.updateTaskStatus({ status: 'IN_PROGRESS' }, 'taskId', 'userId');
 
       await expect(act).rejects.toThrow(AppError);
       await expect(act).rejects.toMatchObject(
@@ -95,7 +96,8 @@ describe('tasks.service.ts', () => {
         }),
       );
 
-      const act = () => sut.updateTaskStatus('IN_PROGRESS', 'taskId', 'userId');
+      const act = () =>
+        sut.updateTaskStatus({ status: 'IN_PROGRESS' }, 'taskId', 'userId');
 
       await expect(act).rejects.toThrow(AppError);
       await expect(act).rejects.toMatchObject(
@@ -117,7 +119,8 @@ describe('tasks.service.ts', () => {
         }),
       );
 
-      const act = () => sut.updateTaskStatus('IN_PROGRESS', 'taskId', 'userId');
+      const act = () =>
+        sut.updateTaskStatus({ status: 'IN_PROGRESS' }, 'taskId', 'userId');
 
       await expect(act).rejects.toThrow(AppError);
       await expect(act).rejects.toMatchObject(
