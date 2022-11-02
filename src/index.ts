@@ -1,5 +1,5 @@
-import { Server } from '#/server/Server';
+import { createServer } from '#/server/Server';
 
-const server = new Server();
+const server = createServer();
 
-server.start(+process.env.PORT! || 4000);
+server.start();
