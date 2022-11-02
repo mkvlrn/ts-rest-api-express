@@ -8,18 +8,19 @@ import { TasksService } from '#/modules/tasks/tasks.service';
 
 @injectable()
 export class TasksController {
-  constructor(private service: TasksService) {
-    this.createTask.bind(this);
-  }
+  constructor(private service: TasksService) {}
 
-  async createTask(req: CustomRequest<CreateTaskDto>, res: Response) {
+  createTask = async (req: CustomRequest<CreateTaskDto>, res: Response) => {
     const { body, user } = req;
     const result = await this.service.createTask(body, user!.id);
 
     return res.status(201).json(result);
-  }
+  };
 
-  async updateTaskStatus(req: CustomRequest<UpdateTaskStatus>, res: Response) {
+  updateTaskStatus = async (
+    req: CustomRequest<UpdateTaskStatus>,
+    res: Response,
+  ) => {
     const { body, user, params } = req;
     const result = await this.service.updateTaskStatus(
       body,
@@ -27,6 +28,27 @@ export class TasksController {
       user!.id,
     );
 
-    return res.status(201).json(result);
-  }
+    return res.json(result);
+  };
+
+  deleteTask = async (req: CustomRequest, res: Response) => {
+    const { user, params } = req;
+    const result = await this.service.deleteTask(params.taskId, user!.id);
+
+    return res.json(result);
+  };
+
+  getManyTasks = async (req: CustomRequest, res: Response) => {
+    const { user } = req;
+    const result = await this.service.getManyTasks(user!.id);
+
+    return res.json(result);
+  };
+
+  getTask = async (req: CustomRequest, res: Response) => {
+    const { user, params } = req;
+    const result = await this.service.getTask(params.taskId, user!.id);
+
+    return res.json(result);
+  };
 }
