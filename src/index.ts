@@ -1,8 +1,4 @@
-import { config as dotenvConfig } from 'dotenv';
-
 import { Server } from '#/server/Server';
-
-dotenvConfig();
 
 const server = new Server();
 
