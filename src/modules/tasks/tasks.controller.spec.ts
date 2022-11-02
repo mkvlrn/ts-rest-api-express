@@ -3,9 +3,9 @@ import { Task } from '@prisma/client';
 import { Response } from 'express';
 import 'reflect-metadata';
 
+import { CustomRequest } from '#/interfaces/CustomRequest';
 import { TasksController } from '#/modules/tasks/tasks.controller';
 import { TasksService } from '#/modules/tasks/tasks.service';
-import { CustomRequest } from '#/server/CustomRequest';
 
 describe('tasks.controller.ts', () => {
   test('success', async () => {

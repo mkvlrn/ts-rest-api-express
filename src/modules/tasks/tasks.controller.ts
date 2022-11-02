@@ -1,9 +1,9 @@
 import { Response } from 'express';
 import { injectable } from 'tsyringe';
 
+import { CustomRequest } from '#/interfaces/CustomRequest';
 import { CreateTaskDto } from '#/modules/tasks/dto/create-task.dto';
 import { TasksService } from '#/modules/tasks/tasks.service';
-import { CustomRequest } from '#/server/CustomRequest';
 
 @injectable()
 export class TasksController {
