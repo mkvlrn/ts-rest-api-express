@@ -10,7 +10,7 @@ import { AppError, AppErrorType } from '#/server/AppError';
 export class TasksService {
   constructor(private orm: PrismaClient) {}
 
-  async createTask(input: CreateTaskDto, userId: string): Promise<Task> {
+  createTask = async (input: CreateTaskDto, userId: string): Promise<Task> => {
     try {
       return await this.orm.task.create({
         data: { ...input, status: 'INCOMPLETE', userId },
@@ -18,13 +18,13 @@ export class TasksService {
     } catch (err) {
       throw new AppError(AppErrorType.INTERNAL, (err as Error).message);
     }
-  }
+  };
 
-  async updateTaskStatus(
+  updateTaskStatus = async (
     input: UpdateTaskStatus,
     taskId: string,
     userId: string,
-  ): Promise<Task> {
+  ): Promise<Task> => {
     try {
       const exists = await this.orm.task.findUnique({ where: { id: taskId } });
       if (!exists)
@@ -44,9 +44,9 @@ export class TasksService {
       if (err instanceof AppError) throw err;
       throw new AppError(AppErrorType.INTERNAL, (err as Error).message);
     }
-  }
+  };
 
-  async deleteTask(taskId: string, userId: string): Promise<Task> {
+  deleteTask = async (taskId: string, userId: string): Promise<Task> => {
     try {
       const exists = await this.orm.task.findUnique({ where: { id: taskId } });
       if (!exists)
@@ -65,12 +65,12 @@ export class TasksService {
       if (err instanceof AppError) throw err;
       throw new AppError(AppErrorType.INTERNAL, (err as Error).message);
     }
-  }
+  };
 
-  async getManyTasks(
+  getManyTasks = async (
     userId: string,
     page: number = 1,
-  ): Promise<GetManyTasksResponseDto> {
+  ): Promise<GetManyTasksResponseDto> => {
     try {
       const totalTasks = await this.orm.task.count({ where: { userId } });
       const tasks = await this.orm.task.findMany({
@@ -83,9 +83,9 @@ export class TasksService {
     } catch (err) {
       throw new AppError(AppErrorType.INTERNAL, (err as Error).message);
     }
-  }
+  };
 
-  async getTask(taskId: string, userId: string): Promise<Task> {
+  getTask = async (taskId: string, userId: string): Promise<Task> => {
     try {
       const task = await this.orm.task.findUnique({ where: { id: taskId } });
       if (!task)
@@ -102,5 +102,5 @@ export class TasksService {
       if (err instanceof AppError) throw err;
       throw new AppError(AppErrorType.INTERNAL, (err as Error).message);
     }
-  }
+  };
 }
