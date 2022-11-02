@@ -1,6 +1,6 @@
 import { Server as HttpServer, IncomingMessage, ServerResponse } from 'http';
 
-import { Server } from '#/server/Server';
+import { createServer } from '#/server/Server';
 
 describe('Server.ts', () => {
   let listener: HttpServer<typeof IncomingMessage, typeof ServerResponse>;
@@ -10,9 +10,9 @@ describe('Server.ts', () => {
   });
 
   test('starts', () => {
-    const sut = new Server();
+    const sut = createServer();
 
-    listener = sut.start(9999);
+    listener = sut.start(4002);
 
     expect(listener).toBeDefined();
   });
