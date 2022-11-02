@@ -13,6 +13,6 @@ export class Server {
   }
 
   start(port: number) {
-    this.app.listen(port, () => console.log(`server up @${port}`));
+    return this.app.listen(port, () => console.log(`server up @${port}`));
   }
 }
