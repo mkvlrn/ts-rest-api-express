@@ -4,7 +4,7 @@ import 'reflect-metadata';
 
 import { GetManyTasksResponseDto } from '#/modules/tasks/dto/get-many-tasks-response.dto';
 import { TasksService } from '#/modules/tasks/tasks.service';
-import { AppError, AppErrorType } from '#/server/AppError';
+import { AppError } from '#/server/AppError';
 
 describe('tasks.service.ts', () => {
   describe('createTask', () => {
@@ -28,7 +28,7 @@ describe('tasks.service.ts', () => {
         createMock<PrismaClient>({
           task: {
             create: jest.fn().mockImplementation(() => {
-              throw new AppError(AppErrorType.INTERNAL, 'database exploded');
+              throw new Error('database exploded');
             }),
           },
         }),
@@ -111,7 +111,7 @@ describe('tasks.service.ts', () => {
         createMock<PrismaClient>({
           task: {
             findUnique: jest.fn().mockImplementation(() => {
-              throw new AppError(AppErrorType.INTERNAL, 'database exploded');
+              throw new Error('database exploded');
             }),
           },
         }),
@@ -190,7 +190,7 @@ describe('tasks.service.ts', () => {
         createMock<PrismaClient>({
           task: {
             findUnique: jest.fn().mockImplementation(() => {
-              throw new AppError(AppErrorType.INTERNAL, 'database exploded');
+              throw new Error('database exploded');
             }),
           },
         }),
@@ -235,7 +235,7 @@ describe('tasks.service.ts', () => {
         createMock<PrismaClient>({
           task: {
             count: jest.fn().mockImplementation(() => {
-              throw new AppError(AppErrorType.INTERNAL, 'database exploded');
+              throw new Error('database exploded');
             }),
           },
         }),
@@ -313,7 +313,7 @@ describe('tasks.service.ts', () => {
         createMock<PrismaClient>({
           task: {
             findUnique: jest.fn().mockImplementation(() => {
-              throw new AppError(AppErrorType.INTERNAL, 'database exploded');
+              throw new Error('database exploded');
             }),
           },
         }),
