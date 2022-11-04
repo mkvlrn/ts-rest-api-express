@@ -18,16 +18,13 @@ export class UsersRouter {
     this.routes.use(
       '/register',
       this.validator.validate(UserInputDto),
-      this.middleware.asyncHandler(this.controller.register),
+      this.controller.register,
     );
-    this.routes.use(
-      '/login',
-      this.middleware.asyncHandler(this.controller.login),
-    );
+    this.routes.use('/login', this.controller.login);
     this.routes.use(
       '/whoami',
       this.middleware.authentication,
-      this.middleware.asyncHandler(this.controller.whoami),
+      this.controller.whoami,
     );
   }
 }

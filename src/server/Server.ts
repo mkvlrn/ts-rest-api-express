@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import cookieParser from 'cookie-parser';
 import express from 'express';
+import 'express-async-errors';
 import 'reflect-metadata';
 import { container, injectable } from 'tsyringe';
 
