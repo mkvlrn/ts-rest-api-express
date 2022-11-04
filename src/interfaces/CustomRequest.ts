@@ -1,7 +1,7 @@
 import { Request } from 'express';
 
 export interface CustomRequest<
-  B = any,
+  B extends object = any,
   P extends string = any,
   Q extends string = any,
 > extends Request {
