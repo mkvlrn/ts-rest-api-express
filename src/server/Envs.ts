@@ -7,11 +7,9 @@ export abstract class Envs {
 
   static PORT = +process.env.PORT!;
 
+  static REDIS_URL = process.env.REDIS_URL!;
+
   static JWT_SECRET = process.env.JWT_SECRET!;
 
-  static JWT_EXPIRATION = process.env.JWT_EXPIRATION;
-
-  static JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
-
-  static JWT_REFRESH_EXPIRATION = process.env.JWT_REFRESH_EXPIRATION!;
+  static JWT_EXPIRATION = +process.env.JWT_EXPIRATION!;
 }

@@ -40,19 +40,11 @@ export class UsersService {
       if (!passwordMatches)
         throw new AppError(AppErrorType.UNAUTHORIZED, 'invalid credentials');
 
-      const accessToken = sign({ email: user.email }, Envs.JWT_SECRET, {
+      const accessToken = sign({ sub: user.id }, Envs.JWT_SECRET, {
         expiresIn: Envs.JWT_EXPIRATION,
       });
 
-      const refreshToken = sign(
-        { email: user.email },
-        Envs.JWT_REFRESH_SECRET,
-        {
-          expiresIn: Envs.JWT_REFRESH_EXPIRATION,
-        },
-      );
-
-      return { accessToken, refreshToken };
+      return { accessToken };
     } catch (err) {
       if (err instanceof AppError) throw err;
       throw new AppError(AppErrorType.INTERNAL, (err as Error).message);
