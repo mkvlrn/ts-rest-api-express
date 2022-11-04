@@ -41,7 +41,7 @@ export class UsersService {
         throw new AppError(AppErrorType.UNAUTHORIZED, 'invalid credentials');
 
       const accessToken = sign({ sub: user.id }, Envs.JWT_SECRET, {
-        expiresIn: Envs.JWT_EXPIRATION,
+        expiresIn: +Envs.JWT_EXPIRATION,
       });
 
       return { accessToken };

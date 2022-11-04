@@ -23,9 +23,9 @@ export class Server {
   }
 
   start = (port?: number) =>
-    this.app.listen(port ?? Envs.PORT, () =>
-      console.log(`server up @${port ?? Envs.PORT}`),
-    );
+    this.app.listen(port ?? +Envs.PORT, () => {
+      console.log(`server up @${port ?? +Envs.PORT}`);
+    });
 }
 
 container.register(PrismaClient, { useValue: new PrismaClient() });

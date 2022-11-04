@@ -1,15 +1,19 @@
 import { config as dotenvConfig } from 'dotenv';
 
+const env = dotenvConfig();
+
 export abstract class Envs {
-  constructor() {
-    dotenvConfig();
-  }
+  static PORT: string;
 
-  static PORT = +process.env.PORT!;
+  static DATABASE_URL: string;
 
-  static REDIS_URL = process.env.REDIS_URL!;
+  static REDIS_URL: string;
 
-  static JWT_SECRET = process.env.JWT_SECRET!;
+  static JWT_SECRET: string;
 
-  static JWT_EXPIRATION = +process.env.JWT_EXPIRATION!;
+  static JWT_EXPIRATION: string;
+
+  static autoLoadEnv = (() => {
+    Object.assign(this, env.parsed);
+  })();
 }

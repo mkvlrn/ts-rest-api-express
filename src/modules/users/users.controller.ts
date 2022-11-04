@@ -25,7 +25,7 @@ export class UsersController {
     const { accessToken } = await this.service.login(req.body);
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      maxAge: Envs.JWT_EXPIRATION * 1000,
+      maxAge: +Envs.JWT_EXPIRATION * 1000,
     });
 
     return res.json({ success: true });
