@@ -1,8 +1,8 @@
 import { Response } from 'express';
 import { injectable } from 'tsyringe';
 
-import { Authentication } from '#/auth/Authentication';
 import { CustomRequest } from '#/interfaces/CustomRequest';
+import { Authentication } from '#/middlewares/Authentication';
 import { RegisterResponseDto } from '#/modules/users/dto/register-response.dto';
 import { UserInputDto } from '#/modules/users/dto/user-input.dto';
 import { UsersService } from '#/modules/users/users.service';

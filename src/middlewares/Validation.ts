@@ -5,7 +5,7 @@ import { NextFunction, Response } from 'express';
 import { CustomRequest } from '#/interfaces/CustomRequest';
 import { AppError, AppErrorType } from '#/server/AppError';
 
-export class Validator {
+export class Validation {
   validate = (bodyClass?: any, queryClass?: any) =>
     this.doValidate<typeof bodyClass, typeof queryClass>(bodyClass, queryClass);
 

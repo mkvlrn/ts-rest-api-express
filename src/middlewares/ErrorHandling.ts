@@ -5,8 +5,8 @@ import { CustomRequest } from '#/interfaces/CustomRequest';
 import { AppError } from '#/server/AppError';
 
 @injectable()
-export class Middleware {
-  errorHandler = (
+export class ErrorHandling {
+  catchAll = (
     err: AppError,
     _req: CustomRequest,
     res: Response,
