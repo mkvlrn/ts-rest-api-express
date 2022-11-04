@@ -1,10 +1,10 @@
 export enum AppErrorType {
-  INTERNAL = 500,
-  CONFLICT = 409,
-  NOT_FOUND = 404,
-  FORBIDDEN = 403,
-  UNAUTHORIZED = 401,
   BAD_REQUEST = 400,
+  CONFLICT = 409,
+  FORBIDDEN = 403,
+  INTERNAL = 500,
+  NOT_FOUND = 404,
+  UNAUTHORIZED = 401,
 }
 
 export class AppError extends Error {
@@ -12,7 +12,7 @@ export class AppError extends Error {
 
   type: string;
 
-  constructor(type: AppErrorType, message: string) {
+  constructor(type: AppErrorType, message: string, public details: any = null) {
     super(message);
 
     this.name = 'AppError';
