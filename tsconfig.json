@@ -32,7 +32,8 @@
   "include": [
     "./src",
     "./test",
-    "*.config.*"
+    "*.config.*",
+    "jest.setup.ts"
   ],
   "ts-node": {
     "require": [

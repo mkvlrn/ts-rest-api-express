@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest';
 import express, { Application, NextFunction, Response } from 'express';
-import 'reflect-metadata';
 import supertest from 'supertest';
 
 import { CustomRequest } from '#/interfaces/CustomRequest';

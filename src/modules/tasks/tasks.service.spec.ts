@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest';
 import { PrismaClient, Task } from '@prisma/client';
-import 'reflect-metadata';
 
 import { GetManyTasksResponseDto } from '#/modules/tasks/dto/get-many-tasks-response.dto';
 import { TasksService } from '#/modules/tasks/tasks.service';
