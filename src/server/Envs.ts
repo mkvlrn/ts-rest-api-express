@@ -1,15 +1,17 @@
 import { config as dotenvConfig } from 'dotenv';
 
-dotenvConfig();
+export abstract class Envs {
+  constructor() {
+    dotenvConfig();
+  }
 
-export class Config {
   static PORT = +process.env.PORT!;
 
   static JWT_SECRET = process.env.JWT_SECRET!;
 
-  static JWT_EXPIRATION = '30s';
+  static JWT_EXPIRATION = process.env.JWT_EXPIRATION;
 
   static JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
 
-  static JWT_REFRESH_EXPIRATION = '24h';
+  static JWT_REFRESH_EXPIRATION = process.env.JWT_REFRESH_EXPIRATION!;
 }

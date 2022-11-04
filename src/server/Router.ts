@@ -1,15 +1,15 @@
 import { Request, Response, Router as XRouter } from 'express';
 import { injectable } from 'tsyringe';
 
-import { AuthRouter } from '#/modules/auth/auth.router';
+import { UsersRouter } from '#/modules/users/users.router';
 
 @injectable()
 export class Router {
   public routes = XRouter();
 
-  constructor(private authRouter: AuthRouter) {
-    this.routes.use('/auth', this.authRouter.routes);
-    this.routes.get('/', (req: Request, res: Response) =>
+  constructor(private authRouter: UsersRouter) {
+    this.routes.use('/users', this.authRouter.routes);
+    this.routes.get('/', (_req: Request, res: Response) =>
       res.json({ ok: true }),
     );
   }

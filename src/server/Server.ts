@@ -4,7 +4,7 @@ import express from 'express';
 import 'reflect-metadata';
 import { container, injectable } from 'tsyringe';
 
-import { Config } from '#/server/Config';
+import { Envs } from '#/server/Envs';
 import { Middleware } from '#/server/Middleware';
 import { Router } from '#/server/Router';
 
@@ -22,8 +22,8 @@ export class Server {
   }
 
   start = (port?: number) =>
-    this.app.listen(port ?? Config.PORT, () =>
-      console.log(`server up @${port ?? Config.PORT}`),
+    this.app.listen(port ?? Envs.PORT, () =>
+      console.log(`server up @${port ?? Envs.PORT}`),
     );
 }
 

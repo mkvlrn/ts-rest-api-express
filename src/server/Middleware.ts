@@ -5,7 +5,7 @@ import { injectable } from 'tsyringe';
 
 import { CustomRequest } from '#/interfaces/CustomRequest';
 import { AppError, AppErrorType } from '#/server/AppError';
-import { Config } from '#/server/Config';
+import { Envs } from '#/server/Envs';
 
 @injectable()
 export class Middleware {
@@ -21,14 +21,7 @@ export class Middleware {
       if (!accessToken)
         throw new AppError(AppErrorType.UNAUTHORIZED, 'missing jwt token');
 
-      if (
-        !accessToken.match(
-          /^([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_\-+/=]*)/g,
-        )
-      )
-        throw new AppError(AppErrorType.UNAUTHORIZED, 'malformed jwt token');
-
-      const payload = verify(accessToken, Config.JWT_SECRET) as {
+      const payload = verify(accessToken, Envs.JWT_SECRET) as {
         email: string;
       };
       const user = await this.orm.user.findUnique({
@@ -65,6 +58,7 @@ export class Middleware {
         statusCode: err.statusCode,
         type: err.type,
         message: err.message,
+        details: err.details,
       }),
     );
 }
