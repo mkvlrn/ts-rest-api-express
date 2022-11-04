@@ -1,19 +1,23 @@
 import { Router } from 'express';
 import { injectable } from 'tsyringe';
 
-import { AuthController } from '#/modules/auth/auth.controller';
+import { UserInputDto } from '#/modules/users/dto/user-input.dto';
+import { UsersController } from '#/modules/users/users.controller';
 import { Middleware } from '#/server/Middleware';
+import { Validator } from '#/server/Validator';
 
 @injectable()
-export class AuthRouter {
+export class UsersRouter {
   public routes = Router();
 
   constructor(
     private middleware: Middleware,
-    private controller: AuthController,
+    private controller: UsersController,
+    private validator: Validator,
   ) {
     this.routes.use(
       '/register',
+      this.validator.validate(UserInputDto),
       this.middleware.asyncHandler(this.controller.register),
     );
     this.routes.use(

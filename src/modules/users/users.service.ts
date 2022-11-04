@@ -4,12 +4,12 @@ import { sign } from 'jsonwebtoken';
 import { injectable } from 'tsyringe';
 
 import { AuthTokens } from '#/interfaces/AuthTokens';
-import { UserInputDto } from '#/modules/auth/dto/user-input.dto';
+import { UserInputDto } from '#/modules/users/dto/user-input.dto';
 import { AppError, AppErrorType } from '#/server/AppError';
-import { Config } from '#/server/Config';
+import { Envs } from '#/server/Envs';
 
 @injectable()
-export class AuthService {
+export class UsersService {
   constructor(private orm: PrismaClient) {}
 
   register = async (input: UserInputDto): Promise<User> => {
@@ -40,15 +40,15 @@ export class AuthService {
       if (!passwordMatches)
         throw new AppError(AppErrorType.UNAUTHORIZED, 'invalid credentials');
 
-      const accessToken = sign({ email: user.email }, Config.JWT_SECRET, {
-        expiresIn: Config.JWT_EXPIRATION,
+      const accessToken = sign({ email: user.email }, Envs.JWT_SECRET, {
+        expiresIn: Envs.JWT_EXPIRATION,
       });
 
       const refreshToken = sign(
         { email: user.email },
-        Config.JWT_REFRESH_SECRET,
+        Envs.JWT_REFRESH_SECRET,
         {
-          expiresIn: Config.JWT_REFRESH_EXPIRATION,
+          expiresIn: Envs.JWT_REFRESH_EXPIRATION,
         },
       );
 
