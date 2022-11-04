@@ -2,5 +2,8 @@
   "execMap": {
     "ts": "ts-node"
   },
-  "ext": "ts,json"
+  "ext": "ts,json",
+  "ignore": [
+    "*.spec.ts"
+  ]
 }
