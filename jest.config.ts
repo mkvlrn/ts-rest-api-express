@@ -16,7 +16,11 @@ const config: Config = {
     '^.+.(png|svg|jpg|gif|webp)$': 'jest-transform-stub',
   },
   coverageDirectory: 'coverage',
-  collectCoverageFrom: ['./src/**/*.{ts,tsx}', '!**/index.{ts,tsx}'],
+  collectCoverageFrom: [
+    './src/**/*.{ts,tsx}',
+    '!**/index.{ts,tsx}',
+    '!**/*.dto.{ts,tx}',
+  ],
   setupFiles: ['./jest.setup.ts'],
 };
 
