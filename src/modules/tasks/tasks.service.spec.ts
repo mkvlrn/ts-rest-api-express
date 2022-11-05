@@ -15,7 +15,10 @@ describe('tasks.service.ts', () => {
       );
 
       const result = await sut.createTask(
-        { title: 'test_title', description: 'none' },
+        {
+          title: 'test_title',
+          description: 'none',
+        },
         'userId',
       );
 
@@ -33,15 +36,21 @@ describe('tasks.service.ts', () => {
         }),
       );
 
-      const act = () => sut.createTask({ title: '' }, 'userId');
+      const act = () =>
+        sut.createTask(
+          {
+            title: '',
+          },
+          'userId',
+        );
 
-      await expect(act).rejects.toThrow(AppError);
-      await expect(act).rejects.toMatchObject(
-        expect.objectContaining({
-          statusCode: 500,
-          message: 'database exploded',
-        }),
-      );
+      await expect(act).rejects.toMatchObject<AppError>({
+        name: 'AppError',
+        statusCode: 500,
+        type: 'INTERNAL',
+        message: 'database exploded',
+        details: null,
+      });
     });
   });
 
@@ -57,7 +66,9 @@ describe('tasks.service.ts', () => {
       );
 
       const result = await sut.updateTaskStatus(
-        { status: 'IN_PROGRESS' },
+        {
+          status: 'IN_PROGRESS',
+        },
         'taskId',
         'userId',
       );
@@ -77,13 +88,13 @@ describe('tasks.service.ts', () => {
       const act = () =>
         sut.updateTaskStatus({ status: 'IN_PROGRESS' }, 'taskId', 'userId');
 
-      await expect(act).rejects.toThrow(AppError);
-      await expect(act).rejects.toMatchObject(
-        expect.objectContaining({
-          statusCode: 404,
-          message: 'task with id taskId not found',
-        }),
-      );
+      await expect(act).rejects.toMatchObject<AppError>({
+        name: 'AppError',
+        statusCode: 404,
+        type: 'NOT_FOUND',
+        message: 'task with id taskId not found',
+        details: null,
+      });
     });
 
     test('fail - not owner of task', async () => {
@@ -96,15 +107,21 @@ describe('tasks.service.ts', () => {
       );
 
       const act = () =>
-        sut.updateTaskStatus({ status: 'IN_PROGRESS' }, 'taskId', 'userId');
+        sut.updateTaskStatus(
+          {
+            status: 'IN_PROGRESS',
+          },
+          'taskId',
+          'userId',
+        );
 
-      await expect(act).rejects.toThrow(AppError);
-      await expect(act).rejects.toMatchObject(
-        expect.objectContaining({
-          statusCode: 403,
-          message: 'this task is not yours',
-        }),
-      );
+      await expect(act).rejects.toMatchObject<AppError>({
+        name: 'AppError',
+        statusCode: 403,
+        type: 'FORBIDDEN',
+        message: 'this task is not yours',
+        details: null,
+      });
     });
 
     test('fail - orm/db error', async () => {
@@ -119,15 +136,21 @@ describe('tasks.service.ts', () => {
       );
 
       const act = () =>
-        sut.updateTaskStatus({ status: 'IN_PROGRESS' }, 'taskId', 'userId');
+        sut.updateTaskStatus(
+          {
+            status: 'IN_PROGRESS',
+          },
+          'taskId',
+          'userId',
+        );
 
-      await expect(act).rejects.toThrow(AppError);
-      await expect(act).rejects.toMatchObject(
-        expect.objectContaining({
-          statusCode: 500,
-          message: 'database exploded',
-        }),
-      );
+      await expect(act).rejects.toMatchObject<AppError>({
+        name: 'AppError',
+        statusCode: 500,
+        type: 'INTERNAL',
+        message: 'database exploded',
+        details: null,
+      });
     });
   });
 
@@ -158,13 +181,13 @@ describe('tasks.service.ts', () => {
 
       const act = () => sut.deleteTask('taskId', 'userId');
 
-      await expect(act).rejects.toThrow(AppError);
-      await expect(act).rejects.toMatchObject(
-        expect.objectContaining({
-          statusCode: 404,
-          message: 'task with id taskId not found',
-        }),
-      );
+      await expect(act).rejects.toMatchObject<AppError>({
+        name: 'AppError',
+        statusCode: 404,
+        type: 'NOT_FOUND',
+        message: 'task with id taskId not found',
+        details: null,
+      });
     });
 
     test('fail - not owner of task', async () => {
@@ -178,13 +201,13 @@ describe('tasks.service.ts', () => {
 
       const act = () => sut.deleteTask('taskId', 'userId');
 
-      await expect(act).rejects.toThrow(AppError);
-      await expect(act).rejects.toMatchObject(
-        expect.objectContaining({
-          statusCode: 403,
-          message: 'this task is not yours',
-        }),
-      );
+      await expect(act).rejects.toMatchObject<AppError>({
+        name: 'AppError',
+        statusCode: 403,
+        type: 'FORBIDDEN',
+        message: 'this task is not yours',
+        details: null,
+      });
     });
 
     test('fail - orm/db error', async () => {
@@ -245,13 +268,13 @@ describe('tasks.service.ts', () => {
 
       const act = () => sut.getManyTasks('userId', 2);
 
-      await expect(act).rejects.toThrow(AppError);
-      await expect(act).rejects.toMatchObject(
-        expect.objectContaining({
-          statusCode: 500,
-          message: 'database exploded',
-        }),
-      );
+      await expect(act).rejects.toMatchObject<AppError>({
+        name: 'AppError',
+        statusCode: 500,
+        type: 'INTERNAL',
+        message: 'database exploded',
+        details: null,
+      });
     });
   });
 
@@ -281,13 +304,13 @@ describe('tasks.service.ts', () => {
 
       const act = () => sut.getTask('taskId', 'userId');
 
-      await expect(act).rejects.toThrow(AppError);
-      await expect(act).rejects.toMatchObject(
-        expect.objectContaining({
-          statusCode: 404,
-          message: 'task with id taskId not found',
-        }),
-      );
+      await expect(act).rejects.toMatchObject<AppError>({
+        name: 'AppError',
+        statusCode: 404,
+        type: 'NOT_FOUND',
+        message: 'task with id taskId not found',
+        details: null,
+      });
     });
 
     test('fail - not owner of task', async () => {
@@ -301,13 +324,13 @@ describe('tasks.service.ts', () => {
 
       const act = () => sut.getTask('taskId', 'userId');
 
-      await expect(act).rejects.toThrow(AppError);
-      await expect(act).rejects.toMatchObject(
-        expect.objectContaining({
-          statusCode: 403,
-          message: 'this task is not yours',
-        }),
-      );
+      await expect(act).rejects.toMatchObject<AppError>({
+        name: 'AppError',
+        statusCode: 403,
+        type: 'FORBIDDEN',
+        message: 'this task is not yours',
+        details: null,
+      });
     });
 
     test('fail - orm/db error', async () => {
@@ -323,13 +346,13 @@ describe('tasks.service.ts', () => {
 
       const act = () => sut.getTask('taskId', 'userId');
 
-      await expect(act).rejects.toThrow(AppError);
-      await expect(act).rejects.toMatchObject(
-        expect.objectContaining({
-          statusCode: 500,
-          message: 'database exploded',
-        }),
-      );
+      await expect(act).rejects.toMatchObject<AppError>({
+        name: 'AppError',
+        statusCode: 500,
+        type: 'INTERNAL',
+        message: 'database exploded',
+        details: null,
+      });
     });
   });
 });
