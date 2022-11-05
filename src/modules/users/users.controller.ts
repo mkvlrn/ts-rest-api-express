@@ -33,7 +33,7 @@ export class UsersController {
 
   logout = async (req: CustomRequest<UserInputDto>, res: Response) => {
     const token = req.cookies.accessToken;
-    res.cookie('accessToken', undefined, { maxAge: 0 });
+    res.clearCookie('accessToken');
     await this.authentication.invalidateJwt(token);
 
     return res.json({ success: true });
