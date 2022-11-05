@@ -7,6 +7,8 @@ describe('get-many-tasks-response.dto.ts', () => {
   test('works', () => {
     const sut = new GetManyTasksResponseDto(
       10,
+      2,
+      5,
       1,
       createMock<Task[]>([{}, {}, {}, {}, {}]),
     );
@@ -14,6 +16,7 @@ describe('get-many-tasks-response.dto.ts', () => {
     expect(sut).toBeDefined();
     expect(sut.totalTasks).toBe(10);
     expect(sut.totalPages).toBe(2);
+    expect(sut.tasksPerPage).toBe(5);
     expect(sut.page).toBe(1);
     expect(sut.tasks).toHaveLength(5);
   });

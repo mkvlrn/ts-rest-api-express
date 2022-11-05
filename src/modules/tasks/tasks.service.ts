@@ -3,7 +3,7 @@ import { injectable } from 'tsyringe';
 
 import { CreateTaskDto } from '#/modules/tasks/dto/create-task.dto';
 import { GetManyTasksResponseDto } from '#/modules/tasks/dto/get-many-tasks-response.dto';
-import { UpdateTaskStatus } from '#/modules/tasks/dto/update-task-status.dto';
+import { UpdateTaskStatusDto } from '#/modules/tasks/dto/update-task-status.dto';
 import { AppError, AppErrorType } from '#/server/AppError';
 
 @injectable()
@@ -21,7 +21,7 @@ export class TasksService {
   };
 
   updateTaskStatus = async (
-    input: UpdateTaskStatus,
+    input: UpdateTaskStatusDto,
     taskId: string,
     userId: string,
   ): Promise<Task> => {
@@ -79,7 +79,13 @@ export class TasksService {
         skip: (page - 1) * 5,
       });
 
-      return new GetManyTasksResponseDto(totalTasks, page, tasks);
+      return new GetManyTasksResponseDto(
+        totalTasks,
+        Math.ceil(totalTasks / 5),
+        5,
+        page,
+        tasks,
+      );
     } catch (err) {
       throw new AppError(AppErrorType.INTERNAL, (err as Error).message);
     }

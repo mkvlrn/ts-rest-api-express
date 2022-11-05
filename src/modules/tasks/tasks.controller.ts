@@ -3,7 +3,8 @@ import { injectable } from 'tsyringe';
 
 import { CustomRequest } from '#/interfaces/CustomRequest';
 import { CreateTaskDto } from '#/modules/tasks/dto/create-task.dto';
-import { UpdateTaskStatus } from '#/modules/tasks/dto/update-task-status.dto';
+import { GetManyDto } from '#/modules/tasks/dto/get-many.dto';
+import { UpdateTaskStatusDto } from '#/modules/tasks/dto/update-task-status.dto';
 import { TasksService } from '#/modules/tasks/tasks.service';
 
 @injectable()
@@ -18,7 +19,7 @@ export class TasksController {
   };
 
   updateTaskStatus = async (
-    req: CustomRequest<UpdateTaskStatus>,
+    req: CustomRequest<UpdateTaskStatusDto>,
     res: Response,
   ) => {
     const { body, user, params } = req;
@@ -38,9 +39,13 @@ export class TasksController {
     return res.json(result);
   };
 
-  getManyTasks = async (req: CustomRequest, res: Response) => {
+  getManyTasks = async (
+    req: CustomRequest<any, any, keyof GetManyDto>,
+    res: Response,
+  ) => {
     const { user } = req;
-    const result = await this.service.getManyTasks(user!.id);
+    const { query } = req;
+    const result = await this.service.getManyTasks(user!.id, +query.page || 1);
 
     return res.json(result);
   };

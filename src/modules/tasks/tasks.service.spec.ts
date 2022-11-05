@@ -250,6 +250,7 @@ describe('tasks.service.ts', () => {
       expect(result).toEqual<GetManyTasksResponseDto>({
         totalTasks: 1,
         totalPages: 1,
+        tasksPerPage: 5,
         page: 1,
         tasks: [{} as Task],
       });
