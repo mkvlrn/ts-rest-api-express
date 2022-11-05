@@ -12,9 +12,7 @@ jest.mock('jsonwebtoken', () => ({ sign: jest.fn() }));
 describe('users.service.ts', () => {
   describe('register', () => {
     test('success', async () => {
-      const hashSpy = jest
-        .spyOn(argon2, 'hash')
-        .mockResolvedValue('hashedPassword');
+      const hashSpy = jest.spyOn(argon2, 'hash');
 
       const sut = new UsersService(
         createMock<PrismaClient>({
@@ -22,7 +20,6 @@ describe('users.service.ts', () => {
             findUnique: jest.fn().mockResolvedValue(null),
             create: jest.fn().mockResolvedValue({
               email: 'test@email.com',
-              password: 'hashedPassword',
             }),
           },
         }),
@@ -36,7 +33,6 @@ describe('users.service.ts', () => {
       expect(hashSpy).toHaveBeenCalledWith('123456');
       expect(result).toEqual({
         email: 'test@email.com',
-        password: 'hashedPassword',
       });
     });
 
@@ -44,13 +40,18 @@ describe('users.service.ts', () => {
       const sut = new UsersService(
         createMock<PrismaClient>({
           user: {
-            findUnique: jest.fn().mockResolvedValue({}),
+            findUnique: jest.fn().mockResolvedValue({
+              email: 'test@email.com',
+            }),
           },
         }),
       );
 
       const act = () =>
-        sut.register({ email: 'test@email.com', password: '123456' });
+        sut.register({
+          email: 'test@email.com',
+          password: '123456',
+        });
 
       await expect(act).rejects.toMatchObject<AppError>({
         name: 'AppError',
@@ -73,7 +74,10 @@ describe('users.service.ts', () => {
       );
 
       const act = () =>
-        sut.register({ email: 'test@email.com', password: '123456' });
+        sut.register({
+          email: 'test@email.com',
+          password: '123456',
+        });
 
       await expect(act).rejects.toMatchObject<AppError>({
         name: 'AppError',
@@ -123,7 +127,10 @@ describe('users.service.ts', () => {
       );
 
       const act = () =>
-        sut.login({ email: 'test@email.com', password: '123456' });
+        sut.login({
+          email: 'test@email.com',
+          password: '123456',
+        });
 
       await expect(act).rejects.toMatchObject<AppError>({
         name: 'AppError',
@@ -145,7 +152,10 @@ describe('users.service.ts', () => {
       );
 
       const act = () =>
-        sut.login({ email: 'test@email.com', password: 'wrong' });
+        sut.login({
+          email: 'test@email.com',
+          password: 'wrong',
+        });
 
       await expect(act).rejects.toMatchObject<AppError>({
         name: 'AppError',
@@ -169,7 +179,10 @@ describe('users.service.ts', () => {
       );
 
       const act = () =>
-        sut.login({ email: 'test@email.com', password: '123456' });
+        sut.login({
+          email: 'test@email.com',
+          password: '123456',
+        });
 
       await expect(act).rejects.toMatchObject<AppError>({
         name: 'AppError',
