@@ -6,6 +6,7 @@ import { compilerOptions } from './tsconfig.json';
 const config: Config = {
   passWithNoTests: true,
   preset: 'ts-jest',
+  maxWorkers: 2,
   rootDir: './',
   testRegex: '.spec.(ts|tsx)$', // "spec" for unit tests, "test" for integration or e2e
   testEnvironment: 'node', // "jsdom" for react
