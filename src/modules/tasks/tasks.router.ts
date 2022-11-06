@@ -35,6 +35,6 @@ export class TasksRouter {
       this.validation.validate(undefined, GetManyDto),
       this.controller.getManyTasks,
     );
-    this.routes.get('/taskId', this.controller.getTask);
+    this.routes.get('/:taskId', this.controller.getTask);
   }
 }
