@@ -4,4 +4,9 @@
 
 REST api template using expressjs.
 
+- Prisma
+- Postgres
+- JWT authentication using cookies
+- Redis for JWT invalidation (blacklist)
+
 Follows this full [template guide](https://github.com/mkvlrn/typescript-templates).
