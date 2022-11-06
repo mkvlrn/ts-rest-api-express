@@ -10,14 +10,6 @@ import { UsersService } from '#/modules/users/users.service';
 
 describe('users.controller.ts', () => {
   let app: Application;
-  const userMiddleware = (
-    req: CustomRequest,
-    _res: Response,
-    next: NextFunction,
-  ) => {
-    req.user = { id: 'userId', email: 'test@email.com' };
-    next();
-  };
 
   beforeEach(() => {
     app = express();
@@ -32,7 +24,7 @@ describe('users.controller.ts', () => {
       }),
       createMock<Authentication>(),
     );
-    app.post('/', userMiddleware, sut.register);
+    app.post('/', sut.register);
 
     const response = await supertest(app).post('/').send();
 
@@ -47,7 +39,7 @@ describe('users.controller.ts', () => {
       }),
       createMock<Authentication>(),
     );
-    app.post('/', userMiddleware, sut.login);
+    app.post('/', sut.login);
 
     const response = await supertest(app).post('/').send();
 
@@ -65,7 +57,7 @@ describe('users.controller.ts', () => {
       createMock<Authentication>({ invalidateJwt: jest.fn() }),
     );
     app.use(cookieParser());
-    app.post('/', userMiddleware, sut.logout);
+    app.post('/', sut.logout);
 
     const response = await supertest(app)
       .post('/')
@@ -80,6 +72,14 @@ describe('users.controller.ts', () => {
   });
 
   test('whoami', async () => {
+    const userMiddleware = (
+      req: CustomRequest,
+      _res: Response,
+      next: NextFunction,
+    ) => {
+      req.user = { id: 'userId', email: 'test@email.com' };
+      next();
+    };
     const sut = new UsersController(
       createMock<UsersService>(),
       createMock<Authentication>(),
