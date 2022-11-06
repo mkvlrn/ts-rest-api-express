@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { NextFunction, Response } from 'express';
+import Redis from 'ioredis';
 import { decode, verify } from 'jsonwebtoken';
-import { createClient } from 'redis';
-import { injectable } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 
 import { CustomRequest } from '#/interfaces/CustomRequest';
 import { AppError, AppErrorType } from '#/server/AppError';
@@ -10,7 +10,19 @@ import { Envs } from '#/server/Envs';
 
 @injectable()
 export class Authentication {
-  constructor(private orm: PrismaClient) {}
+  constructor(
+    private orm: PrismaClient,
+    @inject('RedisClient') private redis: Redis,
+  ) {
+    this.redis.on('error', (err) => {
+      this.redis.disconnect();
+      throw new AppError(
+        AppErrorType.INTERNAL,
+        'jwt invalidation',
+        (err as Error).message,
+      );
+    });
+  }
 
   jwtStrategy = async (
     req: CustomRequest,
@@ -50,35 +62,13 @@ export class Authentication {
   };
 
   invalidateJwt = async (token: string) => {
-    const redis = createClient({ url: Envs.REDIS_URL });
-    redis.on('error', (err) => {
-      throw new AppError(
-        AppErrorType.INTERNAL,
-        'jwt invalidation',
-        (err as Error).message,
-      );
-    });
-
     const decoded = decode(token) as Partial<{ exp: number }>;
 
-    await redis.connect();
-    await redis.set(token, 'invalid', { EXAT: decoded!.exp });
-    await redis.disconnect();
+    await this.redis.set(token, 'invalid', 'EXAT', decoded!.exp!);
   };
 
   private checkBlacklist = async (token: string): Promise<Boolean> => {
-    const redis = createClient({ url: Envs.REDIS_URL });
-    redis.on('error', (err) => {
-      throw new AppError(
-        AppErrorType.INTERNAL,
-        'jwt invalidation',
-        (err as Error).message,
-      );
-    });
-
-    await redis.connect();
-    const blacklisted = await redis.exists(token);
-    await redis.disconnect();
+    const blacklisted = await this.redis.exists(token);
 
     return Boolean(blacklisted);
   };

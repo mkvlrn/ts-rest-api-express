@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import 'express-async-errors';
+import Redis from 'ioredis';
 import 'reflect-metadata';
 import { container, injectable } from 'tsyringe';
 
@@ -29,4 +30,7 @@ export class Server {
 }
 
 container.register(PrismaClient, { useValue: new PrismaClient() });
+container.register('RedisClient', {
+  useValue: new Redis(Envs.REDIS_URL),
+});
 export const createServer = () => container.resolve(Server);
