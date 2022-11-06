@@ -8,7 +8,9 @@ import { Server } from '#/server/Server';
 
 container.register(PrismaClient, { useValue: new PrismaClient() });
 container.register('RedisClient', {
-  useValue: new Redis(Envs.REDIS_URL),
+  useValue: new Redis(Envs.REDIS_URL, {
+    lazyConnect: true,
+  }),
 });
 const server = container.resolve(Server);
 

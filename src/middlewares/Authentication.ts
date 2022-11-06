@@ -13,16 +13,7 @@ export class Authentication {
   constructor(
     private orm: PrismaClient,
     @inject('RedisClient') private redis: Redis,
-  ) {
-    this.redis.on('error', (err) => {
-      this.redis.disconnect();
-      throw new AppError(
-        AppErrorType.INTERNAL,
-        'jwt invalidation',
-        (err as Error).message,
-      );
-    });
-  }
+  ) {}
 
   jwtStrategy = async (
     req: CustomRequest,
@@ -62,14 +53,30 @@ export class Authentication {
   };
 
   invalidateJwt = async (token: string) => {
-    const decoded = decode(token) as Partial<{ exp: number }>;
+    try {
+      const decoded = decode(token) as Partial<{ exp: number }>;
 
-    await this.redis.set(token, 'invalid', 'EXAT', decoded!.exp!);
+      await this.redis.set(token, 'invalid', 'EXAT', decoded!.exp!);
+    } catch (err) {
+      throw new AppError(
+        AppErrorType.INTERNAL,
+        (err as Error).message,
+        'invalidateJwt',
+      );
+    }
   };
 
   private checkBlacklist = async (token: string): Promise<Boolean> => {
-    const blacklisted = await this.redis.exists(token);
+    try {
+      const blacklisted = await this.redis.exists(token);
 
-    return Boolean(blacklisted);
+      return Boolean(blacklisted);
+    } catch (err) {
+      throw new AppError(
+        AppErrorType.INTERNAL,
+        (err as Error).message,
+        'blacklist',
+      );
+    }
   };
 }
