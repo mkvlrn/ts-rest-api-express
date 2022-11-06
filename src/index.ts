@@ -1,5 +1,15 @@
-import { createServer } from '#/server/Server';
+import { PrismaClient } from '@prisma/client';
+import Redis from 'ioredis';
+import 'reflect-metadata';
+import { container } from 'tsyringe';
 
-const server = createServer();
+import { Envs } from '#/server/Envs';
+import { Server } from '#/server/Server';
+
+container.register(PrismaClient, { useValue: new PrismaClient() });
+container.register('RedisClient', {
+  useValue: new Redis(Envs.REDIS_URL),
+});
+const server = container.resolve(Server);
 
 server.start();
