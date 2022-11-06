@@ -14,4 +14,4 @@ container.register('RedisClient', {
 });
 const server = container.resolve(Server);
 
-server.start();
+server.start(+Envs.PORT);

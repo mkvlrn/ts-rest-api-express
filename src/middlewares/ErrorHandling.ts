@@ -1,10 +1,8 @@
 import { NextFunction, Response } from 'express';
-import { injectable } from 'tsyringe';
 
 import { CustomRequest } from '#/interfaces/CustomRequest';
 import { AppError } from '#/server/AppError';
 
-@injectable()
 export class ErrorHandling {
   catchAll = (
     err: AppError,
