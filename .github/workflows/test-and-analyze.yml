@@ -18,6 +18,8 @@ jobs:
           fetch-depth: 0
       - name: install dependencies
         run: yarn install
+      - name: create env from secret
+        run: echo `echo ${{ secrets.ENV_FILE }} | base64 -d > .env`
       - name: run tests
         run: yarn test --coverage
       - name: save artifact for sonar
