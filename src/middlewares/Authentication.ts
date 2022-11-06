@@ -66,7 +66,7 @@ export class Authentication {
     }
   };
 
-  private checkBlacklist = async (token: string): Promise<Boolean> => {
+  private checkBlacklist = async (token: string): Promise<boolean> => {
     try {
       const blacklisted = await this.redis.exists(token);
 
