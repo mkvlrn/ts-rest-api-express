@@ -6,6 +6,7 @@ import * as jsonwebtoken from 'jsonwebtoken';
 
 import { CustomRequest } from '#/interfaces/CustomRequest';
 import { Authentication } from '#/middlewares/Authentication';
+import { AppError } from '#/server/AppError';
 
 jest.mock('jsonwebtoken', () => ({ verify: jest.fn(), decode: jest.fn() }));
 
@@ -135,6 +136,32 @@ describe('Authentication.ts', () => {
         }),
       );
     });
+
+    test('fail - redis issue', async () => {
+      const sut = new Authentication(
+        createMock<PrismaClient>(),
+        createMock<Redis>({
+          exists: jest.fn(() => {
+            throw new Error('redis broke');
+          }),
+        }),
+      );
+      const nextSpy = jest.fn();
+      await sut.jwtStrategy(
+        createMock<CustomRequest>({ cookies: { accessToken: true } }),
+        createMock<Response>(),
+        nextSpy,
+      );
+
+      expect(nextSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          statusCode: 500,
+          type: 'INTERNAL',
+          message: 'redis broke',
+          details: 'blacklist',
+        }),
+      );
+    });
   });
 
   describe('invalidateJwt', () => {
@@ -151,6 +178,26 @@ describe('Authentication.ts', () => {
 
       expect(decodeSpy).toHaveBeenCalledWith('token');
       expect(mockRedis.set).toHaveBeenCalledWith('token', 'invalid', 'EXAT', 1);
+    });
+
+    test('fail - redis broke', async () => {
+      jest.spyOn(jsonwebtoken, 'decode').mockImplementation(() => ({ exp: 1 }));
+      const mockRedis = createMock<Redis>({
+        set: jest.fn(() => {
+          throw new Error('redis broke');
+        }),
+      });
+      const sut = new Authentication(createMock<PrismaClient>(), mockRedis);
+
+      const act = () => sut.invalidateJwt('token');
+
+      await expect(act).rejects.toMatchObject<AppError>({
+        name: 'AppError',
+        statusCode: 500,
+        type: 'INTERNAL',
+        message: 'redis broke',
+        details: 'invalidateJwt',
+      });
     });
   });
 });
