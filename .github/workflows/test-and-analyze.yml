@@ -16,10 +16,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: get coreutils
-        run: sudo apt install coreutils -y
-      - name: create env from secret
-        run: echo `echo ${{ secrets.ENV_FILE }} | base64 -d > .env`
+      - name: env file creation from secrets
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: .env
+          fileDir: .
+          encodedString: ${{ secrets.ENV_FILE }}
       - name: install dependencies
         run: yarn install
       - name: run tests
