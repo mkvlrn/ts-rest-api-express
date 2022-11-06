@@ -1,46 +1,38 @@
-import { ClassConstructor, plainToInstance } from 'class-transformer';
-import { validate, ValidationError } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
+import {
+  validate as classValidate,
+  ValidationError,
+  ValidatorOptions,
+} from 'class-validator';
 import { NextFunction, Response } from 'express';
 
 import { CustomRequest } from '#/interfaces/CustomRequest';
 import { AppError, AppErrorType } from '#/server/AppError';
 
 export class Validation {
-  validate = (bodyClass?: any, queryClass?: any) =>
-    this.doValidate<typeof bodyClass, typeof queryClass>(bodyClass, queryClass);
-
-  private doValidate =
-    <B extends object = any, Q extends string = any>(
-      bodyClass?: ClassConstructor<B>,
-      queryClass?: ClassConstructor<Q>,
-    ) =>
-    async (
-      req: CustomRequest<B, any, Q>,
-      _res: Response,
-      next: NextFunction,
-    ) => {
+  validate =
+    (bodyDto?: any, queryDto?: any) =>
+    async (req: CustomRequest, _res: Response, next: NextFunction) => {
       const errors: ValidationError[] = [];
-      if (bodyClass) {
+      const opt: ValidatorOptions = {
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      };
+
+      if (bodyDto) {
         const { body } = req;
-        const bodyObj = plainToInstance(bodyClass, body);
-        const bodyErrors = await validate(bodyObj, {
-          whitelist: true,
-          forbidNonWhitelisted: true,
-        });
+        const bodyObj = plainToInstance(bodyDto, body);
+        const bodyErrors = await classValidate(bodyObj, opt);
         errors.push(...bodyErrors);
       }
-      if (queryClass) {
+
+      if (queryDto) {
         const { query } = req;
-        const queryObj = plainToInstance(
-          queryClass,
-          query,
-        ) as unknown as object;
-        const queryErrors = await validate(queryObj, {
-          whitelist: true,
-          forbidNonWhitelisted: true,
-        });
+        const queryObj = plainToInstance(queryDto, query) as object;
+        const queryErrors = await classValidate(queryObj, opt);
         errors.push(...queryErrors);
       }
+
       if (errors.length) {
         const details = errors.map(
           (error) => error.constraints![Object.keys(error.constraints!)[0]],
