@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { NextFunction, Response } from 'express';
 import Redis from 'ioredis';
 import { decode, verify } from 'jsonwebtoken';
-import { inject, injectable } from 'tsyringe';
+import { injectable } from 'tsyringe';
 
 import { CustomRequest } from '#/interfaces/CustomRequest';
 import { AppError, AppErrorType } from '#/server/AppError';
@@ -10,10 +10,7 @@ import { Envs } from '#/server/Envs';
 
 @injectable()
 export class Authentication {
-  constructor(
-    private orm: PrismaClient,
-    @inject('RedisClient') private redis: Redis,
-  ) {}
+  constructor(private orm: PrismaClient, private redis: Redis) {}
 
   jwtStrategy = async (
     req: CustomRequest,

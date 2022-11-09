@@ -7,7 +7,7 @@ import { Envs } from '#/server/Envs';
 import { Server } from '#/server/Server';
 
 container.register(PrismaClient, { useValue: new PrismaClient() });
-container.register('RedisClient', {
+container.register(Redis, {
   useValue: new Redis(Envs.REDIS_URL, {
     lazyConnect: true,
   }),
